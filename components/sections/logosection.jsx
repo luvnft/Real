@@ -41,7 +41,7 @@ const MakerRatingDemo = () => {
         ))}
       </div>
       <span className="text-center text-xs text-white sm:ml-2 sm:text-left sm:text-sm">
-        {count} makers ship faster
+        {count} using our platform
       </span>
     </div>
   );
