@@ -37,10 +37,10 @@ import { Separator } from '@/components/ui/separator';
 import { Button } from '@/components/ui/button';
 import { Edit } from 'lucide-react';
 import { Home, Calendar, DollarSign, Ruler, FileText } from 'lucide-react';
+import Link from 'next/link';
 
 import { Heading } from '@/components/ui/heading';
-import Link from 'next/link';
-import { Plus, Code } from 'lucide-react';
+import { Plus } from 'lucide-react';
 // Initialize Supabase client
 const supabase = createClient(
   'https://tbnfcmekmqbhxfvrzmbp.supabase.co',
@@ -117,7 +117,7 @@ const UserProfile = () => {
 
   const handleCompleteProfile = () => {
     if (userData && userData.role) {
-      window.location.href = '/dashboard/leadform';
+      window.location.href = '/dashboard/profileupdate';
     } else {
       console.error('User role is undefined');
     }
@@ -206,8 +206,6 @@ const UserProfile = () => {
           </Link>
         </div>
       </div>
-
-      <Separator />
       <div className="">
         <Card className="overflow-hidden">
           <div className="relative h-48 bg-gradient-to-r from-blue-500 to-purple-600"></div>
@@ -348,38 +346,198 @@ const UserProfile = () => {
   );
 
   const renderSellerProfile = () => (
-    <div className="mx-auto max-w-4xl  space-y-6">
-      <Card className="overflow-hidden">
-        <div className="relative h-48 bg-gradient-to-r from-green-500 to-blue-600"></div>
-        <CardContent className="relative -mt-16 px-6">
-          <div className="mb-4 mt-4 flex flex-col items-center md:flex-row md:items-start">
-            <Avatar className="h-32 w-32 border-4 border-white shadow-lg">
-              <AvatarImage src={userData.avatar_url} alt={userData.fullName} />
-              <AvatarFallback style={{ width: '63px', height: '63px' }}>
-                {userData.fullName
-                  .split(' ')
-                  .map((n) => n[0])
-                  .join('')}
-              </AvatarFallback>
-            </Avatar>
-            <div className="mt-4 text-center md:ml-6 md:mt-0 md:text-left">
-              <h2 className="text-2xl font-bold">{userData.fullName}</h2>
-              <p className="text-gray-500">Seller</p>
+    <>
+      <div className="mb-4 flex items-center justify-between space-y-2">
+        <Heading
+          title="Profile Section"
+          description="Use our AI-Integrated restate tools and make ease of using the Platform"
+        />
+        <div className="hidden items-center space-x-2 md:flex">
+          <Link href="/dashboard/professionform">
+            <Button>
+              <Plus className="mr-2 h-4 w-4" /> Back to Home
+            </Button>
+          </Link>
+        </div>
+      </div>
+      <div className="">
+        <Card className="overflow-hidden">
+          <div className="relative h-48 bg-gradient-to-r from-green-500 to-blue-600"></div>
+          <CardContent className="relative -mt-16 px-6">
+            <div className="mb-4 mt-4 flex flex-col items-center md:flex-row md:items-start">
+              <Avatar className="h-32 w-32 border-4 border-white shadow-lg">
+                <AvatarImage
+                  src={userData.avatar_url}
+                  alt={userData.fullName}
+                />
+                <AvatarFallback style={{ width: '63px', height: '63px' }}>
+                  {userData.fullName
+                    .split(' ')
+                    .map((n) => n[0])
+                    .join('')}
+                </AvatarFallback>
+              </Avatar>
+              <div className="mt-4 text-center md:ml-6 md:mt-0 md:text-left">
+                <h2 className="text-2xl font-bold">{userData.fullName}</h2>
+                <p className="text-gray-500">Seller</p>
+                <Button variant="ghost" size="icon" onClick={handleEditClick}>
+                  <Edit className="h-4 w-4" />
+                </Button>
+                <div className="mt-2">
+                  <Badge variant="secondary">
+                    {userData.numberOfProperties} Properties
+                  </Badge>
+                </div>
+              </div>
+            </div>
+
+            <Separator className="my-6" />
+
+            <div className="mb-4 mt-4 grid grid-cols-1 gap-4 md:grid-cols-2">
+              <div className="space-y-2">
+                <div className="flex items-center">
+                  <Mail className="mr-2 h-5 w-5 text-gray-500" />
+                  <span>{userData.email}</span>
+                </div>
+                <div className="flex items-center">
+                  <Phone className="mr-2 h-5 w-5 text-gray-500" />
+                  <span>{userData.phone}</span>
+                </div>
+                <div className="flex items-center">
+                  <MapPin className="mr-2 h-5 w-5 text-gray-500" />
+                  <span>{userData.propertyAddress}</span>
+                </div>
+              </div>
+              <div className="space-y-2">
+                <div className="flex items-center">
+                  <DollarSign className="mr-2 h-5 w-5 text-gray-500" />
+                  <span>Asking Price: ${userData.askingPrice}</span>
+                </div>
+                <div className="flex items-center">
+                  <DollarSign className="mr-2 h-5 w-5 text-gray-500" />
+                  <span>
+                    Price Range: ${userData.minimumPrice} - $
+                    {userData.maximumPrice}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <Separator className="my-6" />
+
+            <div className="mb-4 mt-4 grid grid-cols-1 gap-4 md:grid-cols-3">
+              <Card>
+                <CardContent className="pt-6">
+                  <div className="text-center">
+                    <Home className="mx-auto mb-2 h-8 w-8 text-gray-500" />
+                    <h3 className="font-semibold">Property Details</h3>
+                    <p>Bedrooms: {userData.bedrooms}</p>
+                    <p>Bathrooms: {userData.bathrooms}</p>
+                  </div>
+                </CardContent>
+              </Card>
+              <Card>
+                <CardContent className="pt-6">
+                  <div className="text-center">
+                    <Ruler className="mx-auto mb-2 h-8 w-8 text-gray-500" />
+                    <h3 className="font-semibold">Size</h3>
+                    <p>{userData.squareFootage} sq ft</p>
+                  </div>
+                </CardContent>
+              </Card>
+              <Card>
+                <CardContent className="pt-6">
+                  <div className="text-center">
+                    <Calendar className="mx-auto mb-2 h-8 w-8 text-gray-500" />
+                    <h3 className="font-semibold">Year Built</h3>
+                    <p>{userData.yearBuilt}</p>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+
+            <Separator className="my-6" />
+
+            <div className="mb-4 mt-4">
+              <h3 className="mb-2 text-xl font-semibold">
+                Property Description
+              </h3>
+              <p className="text-gray-700">{userData.propertyDescription}</p>
+            </div>
+
+            <Separator className="my-6" />
+
+            <Card className="mt-4 p-4">
+              <Tabs defaultValue="for-sale">
+                <TabsList>
+                  <TabsTrigger value="for-sale">For Sale</TabsTrigger>
+                  <TabsTrigger value="for-rent">For Rent</TabsTrigger>
+                </TabsList>
+                <TabsContent value="for-sale">
+                  <h2 className="mb-4 text-2xl font-bold">
+                    Properties For Sale
+                  </h2>
+                  {renderPropertyList('sale')}
+                </TabsContent>
+                <TabsContent value="for-rent">
+                  <h2 className="mb-4 text-2xl font-bold">
+                    Properties For Rent
+                  </h2>
+                  {renderPropertyList('rent')}
+                </TabsContent>
+              </Tabs>
+            </Card>
+          </CardContent>
+        </Card>
+      </div>
+    </>
+  );
+
+  const renderAgentProfile = () => (
+    <>
+      <div className="mb-4 flex items-center justify-between space-y-2">
+        <Heading
+          title="Profile Section"
+          description="Use our AI-Integrated restate tools and make ease of using the Platform"
+        />
+        <div className="hidden items-center space-x-2 md:flex">
+          <Link href="/dashboard/professionform">
+            <Button>
+              <Plus className="mr-2 h-4 w-4" /> Back to Home
+            </Button>
+          </Link>
+        </div>
+      </div>
+      <div className="">
+        <Card className="overflow-hidden">
+          <div className="relative h-48 bg-gradient-to-r from-yellow-500 to-red-600"></div>
+          <CardContent className="relative -mt-16 px-6">
+            <div className="mt-4 flex flex-col items-center md:flex-row md:items-start">
+              <Avatar className="h-32 w-32 border-4 border-white shadow-lg">
+                <AvatarImage
+                  src={userData.avatar_url}
+                  alt={userData.fullName}
+                />
+                <AvatarFallback style={{ width: '63px', height: '63px' }}>
+                  {userData.fullName
+                    .split(' ')
+                    .map((n) => n[0])
+                    .join('')}
+                </AvatarFallback>
+              </Avatar>
+              <div className="mt-4 text-center md:ml-6 md:mt-0 md:text-left">
+                <h2 className="text-2xl font-bold">{userData.fullName}</h2>
+                <p className="text-gray-500">Real Estate Agent</p>
+                <Badge variant="secondary" className="mt-2">
+                  {userData.specialization}
+                </Badge>
+              </div>
               <Button variant="ghost" size="icon" onClick={handleEditClick}>
                 <Edit className="h-4 w-4" />
               </Button>
-              <div className="mt-2">
-                <Badge variant="secondary">
-                  {userData.numberOfProperties} Properties
-                </Badge>
-              </div>
             </div>
-          </div>
 
-          <Separator className="my-6" />
-
-          <div className="mb-4 mt-4 grid grid-cols-1 gap-4 md:grid-cols-2">
-            <div className="space-y-2">
+            <div className="mb-4 mt-4 mt-6 grid grid-cols-1 gap-4 md:grid-cols-3">
               <div className="flex items-center">
                 <Mail className="mr-2 h-5 w-5 text-gray-500" />
                 <span>{userData.email}</span>
@@ -389,92 +547,109 @@ const UserProfile = () => {
                 <span>{userData.phone}</span>
               </div>
               <div className="flex items-center">
-                <MapPin className="mr-2 h-5 w-5 text-gray-500" />
-                <span>{userData.propertyAddress}</span>
+                <Globe className="mr-2 h-5 w-5 text-gray-500" />
+                <a
+                  href={userData.website}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-blue-500 hover:underline"
+                >
+                  {userData.website}
+                </a>
               </div>
             </div>
-            <div className="space-y-2">
-              <div className="flex items-center">
-                <DollarSign className="mr-2 h-5 w-5 text-gray-500" />
-                <span>Asking Price: ${userData.askingPrice}</span>
-              </div>
-              <div className="flex items-center">
-                <DollarSign className="mr-2 h-5 w-5 text-gray-500" />
-                <span>
-                  Price Range: ${userData.minimumPrice} - $
-                  {userData.maximumPrice}
-                </span>
-              </div>
+
+            <Separator className="my-6" />
+
+            <div className="mb-4 mt-4 mt-6 grid grid-cols-1 gap-4 md:grid-cols-3">
+              <Card>
+                <CardContent className="pt-6">
+                  <div className="text-center">
+                    <Award className="mx-auto mb-2 h-8 w-8 text-gray-500" />
+                    <h3 className="font-semibold">License Number</h3>
+                    <p>{userData.licenseNumber}</p>
+                  </div>
+                </CardContent>
+              </Card>
+              <Card>
+                <CardContent className="pt-6">
+                  <div className="text-center">
+                    <Briefcase className="mx-auto mb-2 h-8 w-8 text-gray-500" />
+                    <h3 className="font-semibold">Brokerage</h3>
+                    <p>{userData.brokerageName}</p>
+                  </div>
+                </CardContent>
+              </Card>
+              <Card>
+                <CardContent className="pt-6">
+                  <div className="text-center">
+                    <Calendar className="mx-auto mb-2 h-8 w-8 text-gray-500" />
+                    <h3 className="font-semibold">Experience</h3>
+                    <p>{userData.yearsOfExperience} years</p>
+                  </div>
+                </CardContent>
+              </Card>
             </div>
-          </div>
 
-          <Separator className="my-6" />
+            <Separator className="my-6" />
 
-          <div className="mb-4 mt-4 grid grid-cols-1 gap-4 md:grid-cols-3">
-            <Card>
-              <CardContent className="pt-6">
-                <div className="text-center">
-                  <Home className="mx-auto mb-2 h-8 w-8 text-gray-500" />
-                  <h3 className="font-semibold">Property Details</h3>
-                  <p>Bedrooms: {userData.bedrooms}</p>
-                  <p>Bathrooms: {userData.bathrooms}</p>
-                </div>
-              </CardContent>
+            <div className="mb-4 mt-4">
+              <h3 className="mb-2 text-xl font-semibold">About Me</h3>
+              <p className="text-gray-700">{userData.bio}</p>
+            </div>
+
+            <Separator className="my-6" />
+
+            <div className="mb-4 mt-4">
+              <h3 className="mb-2 text-xl font-semibold">Service Areas</h3>
+              <p className="text-gray-700">{userData.serviceAreas}</p>
+            </div>
+
+            <Separator className="my-6" />
+
+            <Card className="mt-4 p-4">
+              <Tabs defaultValue="for-sale">
+                <TabsList>
+                  <TabsTrigger value="for-sale">For Sale</TabsTrigger>
+                  <TabsTrigger value="for-rent">For Rent</TabsTrigger>
+                </TabsList>
+                <TabsContent value="for-sale">
+                  <h2 className="mb-4 text-2xl font-bold">
+                    Properties For Sale
+                  </h2>
+                  {renderPropertyList('sale')}
+                </TabsContent>
+                <TabsContent value="for-rent">
+                  <h2 className="mb-4 text-2xl font-bold">
+                    Properties For Rent
+                  </h2>
+                  {renderPropertyList('rent')}
+                </TabsContent>
+              </Tabs>
             </Card>
-            <Card>
-              <CardContent className="pt-6">
-                <div className="text-center">
-                  <Ruler className="mx-auto mb-2 h-8 w-8 text-gray-500" />
-                  <h3 className="font-semibold">Size</h3>
-                  <p>{userData.squareFootage} sq ft</p>
-                </div>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardContent className="pt-6">
-                <div className="text-center">
-                  <Calendar className="mx-auto mb-2 h-8 w-8 text-gray-500" />
-                  <h3 className="font-semibold">Year Built</h3>
-                  <p>{userData.yearBuilt}</p>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-
-          <Separator className="my-6" />
-
-          <div className="mb-4 mt-4">
-            <h3 className="mb-2 text-xl font-semibold">Property Description</h3>
-            <p className="text-gray-700">{userData.propertyDescription}</p>
-          </div>
-
-          <Separator className="my-6" />
-
-          <Card className="mt-4 p-4">
-            <Tabs defaultValue="for-sale">
-              <TabsList>
-                <TabsTrigger value="for-sale">For Sale</TabsTrigger>
-                <TabsTrigger value="for-rent">For Rent</TabsTrigger>
-              </TabsList>
-              <TabsContent value="for-sale">
-                <h2 className="mb-4 text-2xl font-bold">Properties For Sale</h2>
-                {renderPropertyList('sale')}
-              </TabsContent>
-              <TabsContent value="for-rent">
-                <h2 className="mb-4 text-2xl font-bold">Properties For Rent</h2>
-                {renderPropertyList('rent')}
-              </TabsContent>
-            </Tabs>
-          </Card>
-        </CardContent>
-      </Card>
-    </div>
+          </CardContent>
+        </Card>
+      </div>
+    </>
   );
 
-  const renderAgentProfile = () => (
-    <div className="mx-auto max-w-4xl  space-y-6">
-      <Card className="overflow-hidden">
-        <div className="relative h-48 bg-gradient-to-r from-yellow-500 to-red-600"></div>
+  const renderProfessionalProfile = () => (
+    <>
+      <div className="mb-4 flex items-center justify-between space-y-2">
+        <Heading
+          title="Profile Section"
+          description="Use our AI-Integrated restate tools and make ease of using the Platform"
+        />
+        <div className="hidden items-center space-x-2 md:flex">
+          <Link href="/dashboard/professionform">
+            <Button>
+              <Plus className="mr-2 h-4 w-4" /> Back to Home
+            </Button>
+          </Link>
+        </div>
+      </div>
+      <Card className="">
+        <div className="relative h-48 bg-gradient-to-r from-indigo-500 to-pink-600"></div>
         <CardContent className="relative -mt-16 px-6">
           <div className="mt-4 flex flex-col items-center md:flex-row md:items-start">
             <Avatar className="h-32 w-32 border-4 border-white shadow-lg">
@@ -488,17 +663,14 @@ const UserProfile = () => {
             </Avatar>
             <div className="mt-4 text-center md:ml-6 md:mt-0 md:text-left">
               <h2 className="text-2xl font-bold">{userData.fullName}</h2>
-              <p className="text-gray-500">Real Estate Agent</p>
-              <Badge variant="secondary" className="mt-2">
-                {userData.specialization}
-              </Badge>
+              <p className="text-gray-500">{userData.profession}</p>
             </div>
             <Button variant="ghost" size="icon" onClick={handleEditClick}>
               <Edit className="h-4 w-4" />
             </Button>
           </div>
 
-          <div className="mb-4 mt-4 mt-6 grid grid-cols-1 gap-4 md:grid-cols-3">
+          <div className="mb-4 mt-4 mt-6 grid grid-cols-1 gap-4 md:grid-cols-2">
             <div className="flex items-center">
               <Mail className="mr-2 h-5 w-5 text-gray-500" />
               <span>{userData.email}</span>
@@ -508,55 +680,101 @@ const UserProfile = () => {
               <span>{userData.phone}</span>
             </div>
             <div className="flex items-center">
-              <Globe className="mr-2 h-5 w-5 text-gray-500" />
-              <a
-                href={userData.website}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-blue-500 hover:underline"
-              >
-                {userData.website}
-              </a>
+              <MapPin className="mr-2 h-5 w-5 text-gray-500" />
+              <span>{userData.city}</span>
             </div>
-          </div>
-
-          <Separator className="my-6" />
-
-          <div className="mb-4 mt-4 mt-6 grid grid-cols-1 gap-4 md:grid-cols-3">
-            <Card>
-              <CardContent className="pt-6">
-                <div className="text-center">
-                  <Award className="mx-auto mb-2 h-8 w-8 text-gray-500" />
-                  <h3 className="font-semibold">License Number</h3>
-                  <p>{userData.licenseNumber}</p>
-                </div>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardContent className="pt-6">
-                <div className="text-center">
-                  <Briefcase className="mx-auto mb-2 h-8 w-8 text-gray-500" />
-                  <h3 className="font-semibold">Brokerage</h3>
-                  <p>{userData.brokerageName}</p>
-                </div>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardContent className="pt-6">
-                <div className="text-center">
-                  <Calendar className="mx-auto mb-2 h-8 w-8 text-gray-500" />
-                  <h3 className="font-semibold">Experience</h3>
-                  <p>{userData.yearsOfExperience} years</p>
-                </div>
-              </CardContent>
-            </Card>
+            <div className="flex items-center">
+              <Briefcase className="mr-2 h-5 w-5 text-gray-500" />
+              <span>{userData.experience} years experience</span>
+            </div>
           </div>
 
           <Separator className="my-6" />
 
           <div className="mb-4 mt-4">
             <h3 className="mb-2 text-xl font-semibold">About Me</h3>
-            <p className="text-gray-700">{userData.bio}</p>
+            <p className="text-gray-700">{userData.about}</p>
+          </div>
+
+          <Separator className="my-6" />
+
+          <div className="mb-4 mt-4">
+            <h3 className="mb-2 text-xl font-semibold">Skills</h3>
+            <p className="text-gray-700">{userData.skills}</p>
+          </div>
+        </CardContent>
+      </Card>
+    </>
+  );
+
+  const renderLandInspectorProfile = () => (
+    <>
+      <div className="mb-4 flex items-center justify-between space-y-2">
+        <Heading
+          title="Profile Section"
+          description="Use our AI-Integrated restate tools and make ease of using the Platform"
+        />
+        <div className="hidden items-center space-x-2 md:flex">
+          <Link href="/dashboard/professionform">
+            <Button>
+              <Plus className="mr-2 h-4 w-4" /> Back to Home
+            </Button>
+          </Link>
+        </div>
+      </div>
+      <Card className="">
+        <div className="relative h-48 bg-gradient-to-r from-teal-500 to-cyan-600"></div>
+        <CardContent className="relative -mt-16 px-6">
+          <div className="mt-4 flex flex-col items-center md:flex-row md:items-start">
+            <Avatar className="h-32 w-32 border-4 border-white shadow-lg">
+              <AvatarImage src={userData.avatar_url} alt={userData.fullName} />
+              <AvatarFallback style={{ width: '63px', height: '63px' }}>
+                {userData.fullName
+                  .split(' ')
+                  .map((n) => n[0])
+                  .join('')}
+              </AvatarFallback>
+            </Avatar>
+            <Button variant="ghost" size="icon" onClick={handleEditClick}>
+              <Edit className="h-4 w-4" />
+            </Button>
+            <div className="mt-4 text-center md:ml-6 md:mt-0 md:text-left">
+              <h2 className="text-2xl font-bold">{userData.fullName}</h2>
+              <p className="text-gray-500">Land Inspector</p>
+            </div>
+          </div>
+
+          <div className="mb-4 mt-4 mt-6 grid grid-cols-1 gap-4 md:grid-cols-2">
+            <div className="flex items-center">
+              <Mail className="mr-2 h-5 w-5 text-gray-500" />
+              <span>{userData.email}</span>
+            </div>
+            <div className="flex items-center">
+              <Phone className="mr-2 h-5 w-5 text-gray-500" />
+              <span>{userData.phone}</span>
+            </div>
+            <div className="flex items-center">
+              <FileText className="mr-2 h-5 w-5 text-gray-500" />
+              <span>License: {userData.licenseNumber}</span>
+            </div>
+            <div className="flex items-center">
+              <PenTool className="mr-2 h-5 w-5 text-gray-500" />
+              <span>{userData.yearsOfExperience} years experience</span>
+            </div>
+          </div>
+
+          <Separator className="my-6" />
+
+          <div className="mb-4 mt-4">
+            <h3 className="mb-2 text-xl font-semibold">Certifications</h3>
+            <p className="text-gray-700">{userData.certifications}</p>
+          </div>
+
+          <Separator className="my-6" />
+
+          <div className="mb-4 mt-4">
+            <h3 className="mb-2 text-xl font-semibold">Specializations</h3>
+            <p className="text-gray-700">{userData.specializations}</p>
           </div>
 
           <Separator className="my-6" />
@@ -568,231 +786,104 @@ const UserProfile = () => {
 
           <Separator className="my-6" />
 
-          <Card className="mt-4 p-4">
-            <Tabs defaultValue="for-sale">
-              <TabsList>
-                <TabsTrigger value="for-sale">For Sale</TabsTrigger>
-                <TabsTrigger value="for-rent">For Rent</TabsTrigger>
-              </TabsList>
-              <TabsContent value="for-sale">
-                <h2 className="mb-4 text-2xl font-bold">Properties For Sale</h2>
-                {renderPropertyList('sale')}
-              </TabsContent>
-              <TabsContent value="for-rent">
-                <h2 className="mb-4 text-2xl font-bold">Properties For Rent</h2>
-                {renderPropertyList('rent')}
-              </TabsContent>
-            </Tabs>
-          </Card>
+          <div className="mb-4 mt-4">
+            <h3 className="mb-2 text-xl font-semibold">
+              Types of Inspections Offered
+            </h3>
+            <p className="text-gray-700">{userData.inspectionTypes}</p>
+          </div>
         </CardContent>
       </Card>
-    </div>
-  );
-
-  const renderProfessionalProfile = () => (
-    <Card className="mb-6 overflow-hidden">
-      <div className="relative h-48 bg-gradient-to-r from-indigo-500 to-pink-600"></div>
-      <CardContent className="relative -mt-16 px-6">
-        <div className="mt-4 flex flex-col items-center md:flex-row md:items-start">
-          <Avatar className="h-32 w-32 border-4 border-white shadow-lg">
-            <AvatarImage src={userData.avatar_url} alt={userData.fullName} />
-            <AvatarFallback style={{ width: '63px', height: '63px' }}>
-              {userData.fullName
-                .split(' ')
-                .map((n) => n[0])
-                .join('')}
-            </AvatarFallback>
-          </Avatar>
-          <div className="mt-4 text-center md:ml-6 md:mt-0 md:text-left">
-            <h2 className="text-2xl font-bold">{userData.fullName}</h2>
-            <p className="text-gray-500">{userData.profession}</p>
-          </div>
-          <Button variant="ghost" size="icon" onClick={handleEditClick}>
-            <Edit className="h-4 w-4" />
-          </Button>
-        </div>
-
-        <div className="mb-4 mt-4 mt-6 grid grid-cols-1 gap-4 md:grid-cols-2">
-          <div className="flex items-center">
-            <Mail className="mr-2 h-5 w-5 text-gray-500" />
-            <span>{userData.email}</span>
-          </div>
-          <div className="flex items-center">
-            <Phone className="mr-2 h-5 w-5 text-gray-500" />
-            <span>{userData.phone}</span>
-          </div>
-          <div className="flex items-center">
-            <MapPin className="mr-2 h-5 w-5 text-gray-500" />
-            <span>{userData.city}</span>
-          </div>
-          <div className="flex items-center">
-            <Briefcase className="mr-2 h-5 w-5 text-gray-500" />
-            <span>{userData.experience} years experience</span>
-          </div>
-        </div>
-
-        <Separator className="my-6" />
-
-        <div className="mb-4 mt-4">
-          <h3 className="mb-2 text-xl font-semibold">About Me</h3>
-          <p className="text-gray-700">{userData.about}</p>
-        </div>
-
-        <Separator className="my-6" />
-
-        <div className="mb-4 mt-4">
-          <h3 className="mb-2 text-xl font-semibold">Skills</h3>
-          <p className="text-gray-700">{userData.skills}</p>
-        </div>
-      </CardContent>
-    </Card>
-  );
-
-  const renderLandInspectorProfile = () => (
-    <Card className="mb-6 overflow-hidden">
-      <div className="relative h-48 bg-gradient-to-r from-teal-500 to-cyan-600"></div>
-      <CardContent className="relative -mt-16 px-6">
-        <div className="mt-4 flex flex-col items-center md:flex-row md:items-start">
-          <Avatar className="h-32 w-32 border-4 border-white shadow-lg">
-            <AvatarImage src={userData.avatar_url} alt={userData.fullName} />
-            <AvatarFallback style={{ width: '63px', height: '63px' }}>
-              {userData.fullName
-                .split(' ')
-                .map((n) => n[0])
-                .join('')}
-            </AvatarFallback>
-          </Avatar>
-          <Button variant="ghost" size="icon" onClick={handleEditClick}>
-            <Edit className="h-4 w-4" />
-          </Button>
-          <div className="mt-4 text-center md:ml-6 md:mt-0 md:text-left">
-            <h2 className="text-2xl font-bold">{userData.fullName}</h2>
-            <p className="text-gray-500">Land Inspector</p>
-          </div>
-        </div>
-
-        <div className="mb-4 mt-4 mt-6 grid grid-cols-1 gap-4 md:grid-cols-2">
-          <div className="flex items-center">
-            <Mail className="mr-2 h-5 w-5 text-gray-500" />
-            <span>{userData.email}</span>
-          </div>
-          <div className="flex items-center">
-            <Phone className="mr-2 h-5 w-5 text-gray-500" />
-            <span>{userData.phone}</span>
-          </div>
-          <div className="flex items-center">
-            <FileText className="mr-2 h-5 w-5 text-gray-500" />
-            <span>License: {userData.licenseNumber}</span>
-          </div>
-          <div className="flex items-center">
-            <PenTool className="mr-2 h-5 w-5 text-gray-500" />
-            <span>{userData.yearsOfExperience} years experience</span>
-          </div>
-        </div>
-
-        <Separator className="my-6" />
-
-        <div className="mb-4 mt-4">
-          <h3 className="mb-2 text-xl font-semibold">Certifications</h3>
-          <p className="text-gray-700">{userData.certifications}</p>
-        </div>
-
-        <Separator className="my-6" />
-
-        <div className="mb-4 mt-4">
-          <h3 className="mb-2 text-xl font-semibold">Specializations</h3>
-          <p className="text-gray-700">{userData.specializations}</p>
-        </div>
-
-        <Separator className="my-6" />
-
-        <div className="mb-4 mt-4">
-          <h3 className="mb-2 text-xl font-semibold">Service Areas</h3>
-          <p className="text-gray-700">{userData.serviceAreas}</p>
-        </div>
-
-        <Separator className="my-6" />
-
-        <div className="mb-4 mt-4">
-          <h3 className="mb-2 text-xl font-semibold">
-            Types of Inspections Offered
-          </h3>
-          <p className="text-gray-700">{userData.inspectionTypes}</p>
-        </div>
-      </CardContent>
-    </Card>
+    </>
   );
 
   const renderAttorneyProfile = () => (
-    <Card className="mb-6 overflow-hidden">
-      <div className="relative h-48 bg-gradient-to-r from-purple-500 to-blue-600"></div>
-      <CardContent className="relative -mt-16 px-6">
-        <div className="mt-4 flex flex-col items-center md:flex-row md:items-start">
-          <Avatar className="h-32 w-32 border-4 border-white shadow-lg">
-            <AvatarImage src={userData.avatar_url} alt={userData.fullName} />
-            <AvatarFallback style={{ width: '63px', height: '63px' }}>
-              {userData.fullName
-                .split(' ')
-                .map((n) => n[0])
-                .join('')}
-            </AvatarFallback>
-          </Avatar>
-          <div className="mt-4 text-center md:ml-6 md:mt-0 md:text-left">
-            <h2 className="text-2xl font-bold">{userData.fullName}</h2>
-            <p className="text-gray-500">Attorney</p>
-          </div>
-          <Button variant="ghost" size="icon" onClick={handleEditClick}>
-            <Edit className="h-4 w-4" />
-          </Button>
+    <>
+      <div className="mb-4 flex items-center justify-between space-y-2">
+        <Heading
+          title="Profile Section"
+          description="Use our AI-Integrated restate tools and make ease of using the Platform"
+        />
+        <div className="hidden items-center space-x-2 md:flex">
+          <Link href="/dashboard/professionform">
+            <Button>
+              <Plus className="mr-2 h-4 w-4" /> Back to Home
+            </Button>
+          </Link>
         </div>
-
-        <div className="mb-4 mt-4 mt-6 grid grid-cols-1 gap-4 md:grid-cols-2">
-          <div className="flex items-center">
-            <Mail className="mr-2 h-5 w-5 text-gray-500" />
-            <span>{userData.email}</span>
+      </div>
+      <Card className="">
+        <div className="relative h-48 bg-gradient-to-r from-purple-500 to-blue-600"></div>
+        <CardContent className="relative -mt-16 px-6">
+          <div className="mt-4 flex flex-col items-center md:flex-row md:items-start">
+            <Avatar className="h-32 w-32 border-4 border-white shadow-lg">
+              <AvatarImage src={userData.avatar_url} alt={userData.fullName} />
+              <AvatarFallback style={{ width: '63px', height: '63px' }}>
+                {userData.fullName
+                  .split(' ')
+                  .map((n) => n[0])
+                  .join('')}
+              </AvatarFallback>
+            </Avatar>
+            <div className="mt-4 text-center md:ml-6 md:mt-0 md:text-left">
+              <h2 className="text-2xl font-bold">{userData.fullName}</h2>
+              <p className="text-gray-500">Attorney</p>
+            </div>
+            <Button variant="ghost" size="icon" onClick={handleEditClick}>
+              <Edit className="h-4 w-4" />
+            </Button>
           </div>
-          <div className="flex items-center">
-            <Phone className="mr-2 h-5 w-5 text-gray-500" />
-            <span>{userData.phone}</span>
+
+          <div className="mb-4 mt-4 mt-6 grid grid-cols-1 gap-4 md:grid-cols-2">
+            <div className="flex items-center">
+              <Mail className="mr-2 h-5 w-5 text-gray-500" />
+              <span>{userData.email}</span>
+            </div>
+            <div className="flex items-center">
+              <Phone className="mr-2 h-5 w-5 text-gray-500" />
+              <span>{userData.phone}</span>
+            </div>
+            <div className="flex items-center">
+              <FileText className="mr-2 h-5 w-5 text-gray-500" />
+              <span>Bar Number: {userData.barNumber}</span>
+            </div>
+            <div className="flex items-center">
+              <Briefcase className="mr-2 h-5 w-5 text-gray-500" />
+              <span>{userData.lawFirmName}</span>
+            </div>
           </div>
-          <div className="flex items-center">
-            <FileText className="mr-2 h-5 w-5 text-gray-500" />
-            <span>Bar Number: {userData.barNumber}</span>
+
+          <Separator className="my-6" />
+
+          <div className="mb-4 mt-4">
+            <h3 className="mb-2 text-xl font-semibold">Practice Areas</h3>
+            <p className="text-gray-700">{userData.practiceAreas}</p>
           </div>
-          <div className="flex items-center">
-            <Briefcase className="mr-2 h-5 w-5 text-gray-500" />
-            <span>{userData.lawFirmName}</span>
+
+          <Separator className="my-6" />
+
+          <div className="mb-4 mt-4">
+            <h3 className="mb-2 text-xl font-semibold">Professional Bio</h3>
+            <p className="text-gray-700">{userData.bio}</p>
           </div>
-        </div>
 
-        <Separator className="my-6" />
+          <Separator className="my-6" />
 
-        <div className="mb-4 mt-4">
-          <h3 className="mb-2 text-xl font-semibold">Practice Areas</h3>
-          <p className="text-gray-700">{userData.practiceAreas}</p>
-        </div>
-
-        <Separator className="my-6" />
-
-        <div className="mb-4 mt-4">
-          <h3 className="mb-2 text-xl font-semibold">Professional Bio</h3>
-          <p className="text-gray-700">{userData.bio}</p>
-        </div>
-
-        <Separator className="my-6" />
-
-        <div className="mb-4 mt-4 grid grid-cols-1 gap-4 md:grid-cols-2">
-          <div>
-            <h3 className="mb-2 text-lg font-semibold">Education</h3>
-            <p className="text-gray-700">{userData.education}</p>
+          <div className="mb-4 mt-4 grid grid-cols-1 gap-4 md:grid-cols-2">
+            <div>
+              <h3 className="mb-2 text-lg font-semibold">Education</h3>
+              <p className="text-gray-700">{userData.education}</p>
+            </div>
+            <div>
+              <h3 className="mb-2 text-lg font-semibold">Experience</h3>
+              <p className="text-gray-700">
+                {userData.yearsOfExperience} years
+              </p>
+            </div>
           </div>
-          <div>
-            <h3 className="mb-2 text-lg font-semibold">Experience</h3>
-            <p className="text-gray-700">{userData.yearsOfExperience} years</p>
-          </div>
-        </div>
-      </CardContent>
-    </Card>
+        </CardContent>
+      </Card>
+    </>
   );
 
   return (
