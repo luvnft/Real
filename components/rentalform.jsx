@@ -27,6 +27,7 @@ import { Heading } from '@/components/ui/heading';
 import Link from 'next/link';
 import { Plus, Code } from 'lucide-react';
 import Confetti from 'react-confetti';
+import { PayPalScriptProvider, PayPalButtons } from '@paypal/react-paypal-js';
 
 // Initialize Supabase client
 const supabase = createClient(
@@ -49,6 +50,10 @@ export default function PropertyListingForm() {
       height: window.innerHeight
     });
   }, []);
+
+  const [isAgent, setIsAgent] = useState(false);
+  const [showPayPal, setShowPayPal] = useState(false);
+  const [paymentCompleted, setPaymentCompleted] = useState(false);
 
   useEffect(() => {
     window.addEventListener('resize', detectSize);
@@ -138,6 +143,26 @@ export default function PropertyListingForm() {
     }
   };
 
+  useEffect(() => {
+    if (user) {
+      checkUserRole();
+    }
+  }, [user]);
+
+  const checkUserRole = async () => {
+    const { data, error } = await supabase
+      .from('users')
+      .select('role')
+      .eq('userid', user.id)
+      .single();
+
+    if (data) {
+      setIsAgent(data.role === 'agent');
+    } else {
+      setIsAgent('notagent');
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError(null);
@@ -145,6 +170,11 @@ export default function PropertyListingForm() {
 
     if (!user) {
       setError('No user logged in');
+      return;
+    }
+
+    if (!isAgent && !paymentCompleted) {
+      setShowPayPal(true);
       return;
     }
 
@@ -566,11 +596,60 @@ export default function PropertyListingForm() {
               </div>
             </div>
           </form>
+
+          {!isAgent && showPayPal && !paymentCompleted && (
+            <div className="mt-6">
+              <h3 className="mb-2 text-lg font-semibold">Payment Required</h3>
+              <PayPalScriptProvider
+                options={{
+                  'client-id':
+                    'AQ3hHQbVcAFxIVpKOip-LluE3whXGHLeLpI215fswm7_9ulbeO6vlwMxpN5tE7vdQN8ej44pvFleU91r'
+                }}
+              >
+                <div>
+                  <div
+                    style={{
+                      padding: '10px',
+                      background: 'white',
+                      borderRadius: '5px'
+                    }}
+                  >
+                    <PayPalButtons
+                      style={{
+                        disableMaxWidth: 'true'
+                      }}
+                      createOrder={(data, actions) => {
+                        return actions.order.create({
+                          purchase_units: [
+                            {
+                              amount: {
+                                value: '9.00'
+                              }
+                            }
+                          ]
+                        });
+                      }}
+                      onApprove={(data, actions) => {
+                        return actions.order.capture().then((details) => {
+                          setPaymentCompleted(true);
+                          listProperty(); // Call listProperty after successful payment
+                        });
+                      }}
+                    />
+                  </div>
+                </div>
+              </PayPalScriptProvider>
+            </div>
+          )}
         </CardContent>
         <CardFooter>
           <div className="flex justify-end">
             <Button onClick={handleSubmit} disabled={uploading}>
-              {uploading ? 'Uploading...' : 'List Property'}
+              {uploading
+                ? 'Uploading...'
+                : isAgent || paymentCompleted
+                ? 'List Property'
+                : 'Proceed to Payment'}
             </Button>
           </div>
         </CardFooter>
