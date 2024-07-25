@@ -2,6 +2,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import Link from 'next/link';
 import { createClient } from '@supabase/supabase-js';
+import { PayPalScriptProvider, PayPalButtons } from '@paypal/react-paypal-js';
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -55,6 +56,16 @@ import { Input } from '@/components/ui/input';
 import { Checkbox } from '@/components/ui/checkbox';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { useUser } from '@clerk/nextjs';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger
+} from '@/components/ui/dialog';
+
 // Initialize Supabase client
 const supabase = createClient(
   'https://tbnfcmekmqbhxfvrzmbp.supabase.co',
@@ -62,6 +73,8 @@ const supabase = createClient(
 );
 
 export default function Component() {
+  const { user, isLoaded } = useUser();
+
   const [userData, setUserData] = useState({
     sellers: [],
     buyers: [],
@@ -95,8 +108,11 @@ export default function Component() {
   const [activeTab, setActiveTab] = useState('sellers');
   const [isFilterSheetOpen, setIsFilterSheetOpen] = useState(false);
 
+  const [userPaidStatus, setUserPaidStatus] = useState(false);
+
   const [selectedLead, setSelectedLead] = useState(null);
   const [isLeadSheetOpen, setIsLeadSheetOpen] = useState(false);
+  const [isPaymentDialogOpen, setIsPaymentDialogOpen] = useState(false);
 
   const userTypeIcons = {
     sellers: <Home className="mr-2 h-4 w-4" />,
@@ -109,6 +125,42 @@ export default function Component() {
   const openLeadDetails = (lead) => {
     setSelectedLead(lead);
     setIsLeadSheetOpen(true);
+  };
+
+  const checkUserPaidStatus = async () => {
+    console.log(user.id);
+    const { data, error } = await supabase
+      .from('users')
+      .select('paid_status')
+      .eq('userid', user.id)
+      .single();
+
+    if (data) {
+      setUserPaidStatus(data.paid_status === true);
+      console.log(data);
+    } else {
+      setUserPaidStatus('false');
+    }
+  };
+
+  useEffect(() => {
+    if (isLoaded && user) {
+      checkUserPaidStatus();
+    }
+  }, [isLoaded, user]);
+
+  const updateUserPaidStatus = async (userId) => {
+    const { data, error } = await supabase
+      .from('users')
+      .update({ paid_status: true })
+      .eq('userid', userId);
+
+    if (error) {
+      console.error('Error updating user paid status:', error);
+    } else {
+      setUserPaidStatus(true);
+      console.log('User paid status updated successfully');
+    }
   };
 
   const downloadCSV = (lead) => {
@@ -982,11 +1034,61 @@ export default function Component() {
           description="Use our AI-Integrated restate tools and make ease of using the Platform"
         />
         <div className="hidden items-center space-x-2 md:flex">
-          <Link href="/dashboard/leadform">
-            <Button>
-              <Plus className="mr-2 h-4 w-4" /> Add New
-            </Button>
-          </Link>
+          {userPaidStatus ? (
+            <Link href="/dashboard/leadform">
+              <Button>
+                <Plus className="mr-2 h-4 w-4" /> Add New
+              </Button>
+            </Link>
+          ) : (
+            <Dialog
+              open={isPaymentDialogOpen}
+              onOpenChange={setIsPaymentDialogOpen}
+            >
+              <DialogTrigger asChild>
+                <Button>
+                  <DollarSign className="mr-2 h-4 w-4" /> Pay to Access
+                </Button>
+              </DialogTrigger>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle>Upgrade to Access All Features</DialogTitle>
+                  <DialogDescription>
+                    Unlock full access to all leads and features by making a
+                    one-time payment.
+                  </DialogDescription>
+                </DialogHeader>
+                <PayPalScriptProvider
+                  options={{
+                    'client-id':
+                      'AQ3hHQbVcAFxIVpKOip-LluE3whXGHLeLpI215fswm7_9ulbeO6vlwMxpN5tE7vdQN8ej44pvFleU91r'
+                  }}
+                >
+                  <PayPalButtons
+                    createOrder={(data, actions) => {
+                      return actions.order.create({
+                        purchase_units: [
+                          {
+                            amount: {
+                              value: '9.00'
+                            }
+                          }
+                        ]
+                      });
+                    }}
+                    onApprove={(data, actions) => {
+                      return actions.order.capture().then(function (details) {
+                        console.log(
+                          'Payment completed. Updating user status...'
+                        );
+                        updateUserPaidStatus(user.id);
+                      });
+                    }}
+                  />
+                </PayPalScriptProvider>
+              </DialogContent>
+            </Dialog>
+          )}
         </div>
       </div>
 
@@ -1159,8 +1261,13 @@ export default function Component() {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {filteredData.map((user) => (
-                      <TableRow key={user.id}>
+                    {filteredData.map((user, index) => (
+                      <TableRow
+                        key={user.id}
+                        className={
+                          !userPaidStatus && index >= 2 ? 'blur-sm' : ''
+                        }
+                      >
                         <TableCell>
                           <div className="font-medium">{user.name}</div>
                         </TableCell>
@@ -1219,6 +1326,7 @@ export default function Component() {
                               variant="outline"
                               size="sm"
                               onClick={() => openLeadDetails(user)}
+                              disabled={!userPaidStatus && index >= 2}
                             >
                               View
                             </Button>
