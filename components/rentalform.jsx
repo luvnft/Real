@@ -264,12 +264,12 @@ export default function PropertyListingForm() {
       <div className="mb-4 flex items-center justify-between space-y-2">
         <Heading
           title="List Your Property"
-          description="Use our AI-Integrated restate tools and make ease of using the Platform"
+          description="You just need to fill the form to list your Property for sale or rent"
         />
         <div className="hidden items-center space-x-2 md:flex">
-          <Link href="/dashboard/professionform">
+          <Link href="/dashboard">
             <Button>
-              <Plus className="mr-2 h-4 w-4" /> Add New
+              <Plus className="mr-2 h-4 w-4" /> Back to Dashboard
             </Button>
           </Link>
         </div>

@@ -196,7 +196,7 @@ const UserProfile = () => {
       <div className="mb-4 flex items-center justify-between space-y-2">
         <Heading
           title="Profile Section"
-          description="Use our AI-Integrated restate tools and make ease of using the Platform"
+          description="Check your Profile details and keep updated your profile"
         />
         <div className="hidden items-center space-x-2 md:flex">
           <Link href="/dashboard/professionform">
@@ -350,7 +350,7 @@ const UserProfile = () => {
       <div className="mb-4 flex items-center justify-between space-y-2">
         <Heading
           title="Profile Section"
-          description="Use our AI-Integrated restate tools and make ease of using the Platform"
+          description="Check your Profile details and keep updated your profile"
         />
         <div className="hidden items-center space-x-2 md:flex">
           <Link href="/dashboard/professionform">
@@ -498,7 +498,7 @@ const UserProfile = () => {
       <div className="mb-4 flex items-center justify-between space-y-2">
         <Heading
           title="Profile Section"
-          description="Use our AI-Integrated restate tools and make ease of using the Platform"
+          description="Check your Profile details and keep updated your profile"
         />
         <div className="hidden items-center space-x-2 md:flex">
           <Link href="/dashboard/professionform">
@@ -638,7 +638,7 @@ const UserProfile = () => {
       <div className="mb-4 flex items-center justify-between space-y-2">
         <Heading
           title="Profile Section"
-          description="Use our AI-Integrated restate tools and make ease of using the Platform"
+          description="Check your Profile details and keep updated your profile"
         />
         <div className="hidden items-center space-x-2 md:flex">
           <Link href="/dashboard/professionform">
@@ -712,7 +712,7 @@ const UserProfile = () => {
       <div className="mb-4 flex items-center justify-between space-y-2">
         <Heading
           title="Profile Section"
-          description="Use our AI-Integrated restate tools and make ease of using the Platform"
+          description="Check your Profile details and keep updated your profile"
         />
         <div className="hidden items-center space-x-2 md:flex">
           <Link href="/dashboard/professionform">
@@ -802,7 +802,7 @@ const UserProfile = () => {
       <div className="mb-4 flex items-center justify-between space-y-2">
         <Heading
           title="Profile Section"
-          description="Use our AI-Integrated restate tools and make ease of using the Platform"
+          description="Check your Profile details and keep updated your profile"
         />
         <div className="hidden items-center space-x-2 md:flex">
           <Link href="/dashboard/professionform">

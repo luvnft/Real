@@ -40,6 +40,7 @@ const blogPosts = [
     7. Deploy your application
 
     With these basics, you'll be well on your way to creating fantastic web applications using Next.js!
+    
     `
   },
   {

@@ -62,7 +62,7 @@ const RealEstateToolsPage = () => {
       <div className="mb-4 flex items-center justify-between space-y-2">
         <Heading
           title="Real-Estate Tool Section"
-          description="Use our AI-Integrated real estate tools and make ease of using the Platform"
+          description="You will get all the tools required in Real-Estate to help in your journey"
         />
         <div className="hidden items-center space-x-2 md:flex">
           <Button>

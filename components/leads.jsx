@@ -1031,7 +1031,7 @@ export default function Component() {
       <div className="mb-4 flex items-center justify-between space-y-2">
         <Heading
           title="Get your Leads"
-          description="Use our AI-Integrated restate tools and make ease of using the Platform"
+          description="You will get all types of leads in this section use the filters as well"
         />
         <div className="hidden items-center space-x-2 md:flex">
           {userPaidStatus ? (

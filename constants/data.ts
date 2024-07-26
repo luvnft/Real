@@ -10,7 +10,6 @@ export type User = {
   total_rental_volume: number;
 };
 
-
 export type Employee = {
   id: number;
   name: string;
@@ -69,6 +68,10 @@ export const navItems: NavItem[] = [
     icon: 'profile',
     label: 'employee'
   },
-  
-  
+  {
+    title: 'Chat',
+    href: '/dashboard/chat',
+    icon: 'chat',
+    label: 'employee'
+  }
 ];

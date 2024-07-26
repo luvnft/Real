@@ -35,7 +35,8 @@ import {
   Building,
   DollarSign,
   Users,
-  Briefcase
+  Briefcase,
+  SendIcon
 } from 'lucide-react';
 
 export type Icon = LucideIcon;
@@ -45,6 +46,7 @@ export const Icons = {
   logo: Command,
   plus: PlusIcon,
   speech: Speech,
+  chat: SendIcon,
   login: LogIn,
   tools: PenTool,
   close: X,

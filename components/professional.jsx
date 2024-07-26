@@ -36,6 +36,17 @@ import { Badge } from '@/components/ui/badge';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import Vapi from '@vapi-ai/web';
 import { useUser } from '@clerk/nextjs';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger
+} from '@/components/ui/dialog';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
+import { toast } from '@/components/ui/use-toast';
 // Initialize Supabase client
 const supabase = createClient(
   'https://tbnfcmekmqbhxfvrzmbp.supabase.co',
@@ -106,13 +117,13 @@ export default function BeautifiedProfessionalsPage() {
     <div className="min-h-screen bg-gradient-to-b from-blue-100 to-white">
       <div className="mb-4 flex items-center justify-between space-y-2">
         <Heading
-          title="Real-Estate Tool Section"
-          description="Use our AI-Integrated restate tools and make ease of using the Platform"
+          title="Find Professional Section"
+          description="Hire your Professional for your work and talk with them using AI assistant"
         />
         <div className="hidden items-center space-x-2 md:flex">
-          <Link href="/dashboard/professionform">
+          <Link href="/dashboard">
             <Button>
-              <Plus className="mr-2 h-4 w-4" /> Request New Tool
+              <Plus className="mr-2 h-4 w-4" /> Back to Dashboard
             </Button>
           </Link>
         </div>
@@ -252,6 +263,46 @@ function ProfessionalProfile({ professional }) {
   const [vapi, setVapi] = useState(null);
   const [isCallActive, setIsCallActive] = useState(false);
   const [message, setMessage] = useState('');
+
+  const [messageForm, setMessageForm] = useState({
+    name: '',
+    email: '',
+    message: ''
+  });
+
+  const [isMessageDialogOpen, setIsMessageDialogOpen] = useState(false);
+
+  const handleMessageFormChange = (e) => {
+    setMessageForm({ ...messageForm, [e.target.name]: e.target.value });
+  };
+
+  const sendMessage = async () => {
+    try {
+      const { data, error } = await supabase.from('professionalchat').insert({
+        sender_name: messageForm.name,
+        sender_email: messageForm.email,
+        message: messageForm.message,
+        professionid: professional.userid || 'unknown'
+      });
+
+      if (error) throw error;
+
+      toast({
+        title: 'Message Sent',
+        description: 'Your message has been sent to the seller.'
+      });
+
+      setMessageForm({ name: '', email: '', message: '' });
+      setIsMessageDialogOpen(false);
+    } catch (error) {
+      console.error('Error sending message:', error);
+      toast({
+        title: 'Error',
+        description: 'Failed to send message. Please try again.',
+        variant: 'destructive'
+      });
+    }
+  };
 
   useEffect(() => {
     const vapiInstance = new Vapi('67b304bb-8cc0-4f4a-91fd-ebd0538e00d8');
@@ -418,6 +469,66 @@ function ProfessionalProfile({ professional }) {
               </div>
             )}
           </CardContent>
+        </Card>
+
+        <Card style={{ padding: '10px' }}>
+          <Dialog
+            open={isMessageDialogOpen}
+            onOpenChange={setIsMessageDialogOpen}
+          >
+            <DialogTrigger asChild>
+              <Button style={{ width: '100%' }}>Contact Seller</Button>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Contact Seller</DialogTitle>
+                <DialogDescription>
+                  Send a message to the property seller.
+                </DialogDescription>
+              </DialogHeader>
+              <div className="grid gap-4 py-4">
+                <div className="grid grid-cols-4 items-center gap-4">
+                  <Label htmlFor="name" className="text-right">
+                    Name
+                  </Label>
+                  <Input
+                    id="name"
+                    name="name"
+                    value={messageForm.name}
+                    onChange={handleMessageFormChange}
+                    className="col-span-3"
+                  />
+                </div>
+                <div className="grid grid-cols-4 items-center gap-4">
+                  <Label htmlFor="email" className="text-right">
+                    Email
+                  </Label>
+                  <Input
+                    id="email"
+                    name="email"
+                    type="email"
+                    value={messageForm.email}
+                    onChange={handleMessageFormChange}
+                    className="col-span-3"
+                  />
+                </div>
+                <div className="grid grid-cols-4 items-center gap-4">
+                  <Label htmlFor="message" className="text-right">
+                    Message
+                  </Label>
+                  <Textarea
+                    id="message"
+                    name="message"
+                    value={messageForm.message}
+                    onChange={handleMessageFormChange}
+                    className="col-span-3"
+                    rows={4}
+                  />
+                </div>
+              </div>
+              <Button onClick={sendMessage}>Send Message</Button>
+            </DialogContent>
+          </Dialog>
         </Card>
       </div>
     </ScrollArea>
